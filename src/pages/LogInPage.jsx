@@ -1,5 +1,7 @@
   
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'
+
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -10,39 +12,62 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-import { useQuery } from 'react-query'
+import AlertMessage from "../components/AlertMessage";
 
 
 const theme = createTheme();
 
-const logIn = async (username, password) => {
 
-  const response = await fetch('http://umbrage-interview-api.herokuapp.com/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({username, password})
-    })
-  const content = await response.json()
-  console.log(content)
-  return content
-}
+
+
 
 export default function SignIn() {
-  const [checked, setChecked] = useState(false)
+  const localStorageUsername = localStorage.getItem('umbrage-username') || ''
+  const [saveUsername, setSaveUsername] = useState(false)
+  const [status, setStatusBase] = React.useState("");
+  const navigate = useNavigate()
+
+  const logIn = async (username, password) => {
+
+    const response = fetch('http://umbrage-interview-api.herokuapp.com/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({username, password})
+      })
+      .then(function(response) {
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+        return response.json();
+      })
+      .then(function(response) {
+        const { access_token } = response
+
+        // Need to store username for convenience and access token for return visits.
+        localStorage.setItem('umbrage-username', username)
+        localStorage.setItem('umbrage-access-token', access_token)
+        localStorage.setItem('umbrage-access-time', new Date())
+        navigate('../people-dashboard', {replace: true})
+    }).catch(function(error) {
+       // Need to communicate to user that an error has ocurred
+        setStatusBase({ msg: error.message, key: Math.random() });
+    });
+   
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const email = data.get('email')
     const password = data.get('password')
-    const accessToken = logIn(email, password )
+    const accessToken = logIn(email, password, saveUsername )
     console.log(accessToken)
   };
-
-  // const { isLoading, isError, data, error } = useQuery('login', logIn)
 
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
+        {status ? <AlertMessage key={status.key} message={status.msg} /> : null}
         <CssBaseline />
         <Box
           sx={{
@@ -58,7 +83,7 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Log in
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -67,6 +92,7 @@ export default function SignIn() {
               label="Email Address"
               name="email"
               autoComplete="email"
+              defaultValue={localStorageUsername}
               autoFocus
             />
             <TextField
@@ -80,7 +106,7 @@ export default function SignIn() {
               autoComplete="current-password"
             />
             <FormControlLabel
-              control={<Checkbox value={checked} color="primary" onClick={() => setChecked(!checked)}/>}
+              control={<Checkbox value={saveUsername} color="primary" onClick={() => setSaveUsername(!saveUsername)}/>}
               label="Remember me"
             />
             <Button
