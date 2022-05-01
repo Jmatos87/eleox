@@ -5,7 +5,6 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import LogInPage from "./pages/LogIn";
 import PeopleDashboard from "./pages/PeopleDashboard";
-import PersonDetailView from "./pages/PersonDetailView";
 
 import COLORS from "./constants/colors.js";
 
@@ -36,7 +35,6 @@ export default function App() {
           <Routes>
             <Route path="/log-in" element={<LogInPage />} />
             <Route path="/people-dashboard" element={<PeopleDashboard />} />
-            <Route path="/person/:id" element={<PersonDetailView />} />
             <Route path="*" element={<LogInPage />} />
           </Routes>
         </Router>

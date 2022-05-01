@@ -1,7 +1,7 @@
-import * as React from "react";
+import React, { useState } from "react";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
-// import CardMedia from "@mui/material/CardMedia";
+import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Collapse from "@mui/material/Collapse";
@@ -9,8 +9,7 @@ import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import EmailIcon from "@mui/icons-material/Email";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import DeleteIcon from "@mui/icons-material/Delete";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import COLORS from "../constants/colors.js";
@@ -18,41 +17,119 @@ import COLORS from "../constants/colors.js";
 import { css } from "@emotion/css";
 import { styled } from "@mui/system";
 
-const ExpandMore = styled((props) => {
-  const { expand, ...other } = props;
-  return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-  transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
-  marginLeft: "auto",
-  transition: theme.transitions.create("transform", {
-    duration: theme.transitions.duration.shortest,
-  }),
-}));
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
 export default function PersonCard(props) {
-  const { avatar, first_name, last_name, email, id, job_title } = props;
-  const [expanded, setExpanded] = React.useState(false);
+  const {
+    avatar,
+    first_name,
+    last_name,
+    email,
+    id,
+    job_title,
+    accessToken,
+    peopleList,
+    setPeopleList,
+    setStatusBase,
+  } = props;
+  const [expanded, setExpanded] = useState(null);
+  const [modalOpen, setModalOpen] = useState(null);
+  const [commentsLoading, setCommentsLoading] = useState(null);
 
-  const handleExpandClick = () => {
+  const [comments, setComments] = useState([]);
+
+  const handleExpandCommentsClick = () => {
     setExpanded(!expanded);
+    if (!comments.length) {
+      setCommentsLoading(true);
+      fetch(`http://umbrage-interview-api.herokuapp.com/people/${id}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      })
+        .then((response) => {
+          setCommentsLoading(false);
+
+          if (!response.ok) {
+            throw Error(response.statusText);
+          }
+          return response.json();
+        })
+        .then(function (response) {
+          console.log(response);
+          const {
+            person: { comments },
+          } = response;
+          const formatComments = comments.map((obj) => obj.comment);
+          setComments(formatComments);
+        })
+        .catch(function (error) {
+          // Need to communicate to user that an error has ocurred
+          setStatusBase({ msg: error.message, key: Math.random() });
+        });
+    }
+  };
+
+  const handleDeleteContact = () => {
+    setModalOpen(false);
+    fetch(`http://umbrage-interview-api.herokuapp.com/people/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response.json();
+      })
+      .then(function (response) {
+        const newPeopleList = peopleList.filter((person) => person.id !== id);
+        setPeopleList(newPeopleList);
+      })
+      .catch(function (error) {
+        // Need to communicate to user that an error has ocurred
+        setStatusBase({ msg: error.message, key: Math.random() });
+      });
   };
 
   const fullName = `${first_name} ${last_name}`;
 
   return (
     <Card md={{ maxWidth: 345 }}>
-      {/* <CardMedia
-        component="img"
-        height="150"
-        sx={{ width: "150px !important", margin: "0px auto" }}
-        image={avatar}
-        alt={fullName}
-      /> */}
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="p" component="h2">
+            Are you sure you want to delete {fullName}?
+          </Typography>
+          <Button onClick={() => setModalOpen(false)}>Cancel</Button>
+          <Button onClick={handleDeleteContact}>Yes</Button>
+        </Box>
+      </Modal>
       <CardHeader
         avatar={<Avatar alt={fullName} src={avatar} />}
         action={
-          <IconButton aria-label="options" color="primary">
-            <MoreVertIcon />
+          <IconButton
+            aria-label="options"
+            color="primary"
+            onClick={() => setModalOpen(true)}
+          >
+            <DeleteIcon />
           </IconButton>
         }
         title={fullName}
@@ -80,7 +157,7 @@ export default function PersonCard(props) {
           variant="contained"
           color="secondary"
           sx={{ marginLeft: "auto", backgroundColor: COLORS.primary }}
-          onClick={handleExpandClick}
+          onClick={handleExpandCommentsClick}
           size="small"
         >
           Comments
@@ -88,33 +165,18 @@ export default function PersonCard(props) {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography paragraph>Method:</Typography>
-          <Typography paragraph>
-            Heat 1/2 cup of the broth in a pot until simmering, add saffron and
-            set aside for 10 minutes.
-          </Typography>
-          <Typography paragraph>
-            Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet
-            over medium-high heat. Add chicken, shrimp and chorizo, and cook,
-            stirring occasionally until lightly browned, 6 to 8 minutes.
-            Transfer shrimp to a large plate and set aside, leaving chicken and
-            chorizo in the pan. Add pimentón, bay leaves, garlic, tomatoes,
-            onion, salt and pepper, and cook, stirring often until thickened and
-            fragrant, about 10 minutes. Add saffron broth and remaining 4 1/2
-            cups chicken broth; bring to a boil.
-          </Typography>
-          <Typography paragraph>
-            Add rice and stir very gently to distribute. Top with artichokes and
-            peppers, and cook without stirring, until most of the liquid is
-            absorbed, 15 to 18 minutes. Reduce heat to medium-low, add reserved
-            shrimp and mussels, tucking them down into the rice, and cook again
-            without stirring, until mussels have opened and rice is just tender,
-            5 to 7 minutes more. (Discard any mussels that don&apos;t open.)
-          </Typography>
-          <Typography>
-            Set aside off of the heat to let rest for 10 minutes, and then
-            serve.
-          </Typography>
+          {!commentsLoading && comments.length === 0 && (
+            <CardMedia
+              component="img"
+              height="150"
+              sx={{ width: "150px !important", margin: "0px auto" }}
+              image="https://c.tenor.com/ZvXGCIW2KjkAAAAM/nothing-to-see-here-im-out.gif"
+              alt="No results nothing to see here"
+            />
+          )}
+          {comments.map((comment) => (
+            <Typography paragraph>{comment}</Typography>
+          ))}
         </CardContent>
       </Collapse>
     </Card>

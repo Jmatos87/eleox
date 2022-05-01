@@ -19,7 +19,7 @@ import PersonCard from "../components/PersonCard";
 
 export default function PeopleDashboardPage() {
   const [peopleList, setPeopleList] = useState([]);
-  const [status, setStatusBase] = React.useState("");
+  const [status, setStatusBase] = React.useState(null);
   const navigate = useNavigate();
   const accessToken = localStorage.getItem("umbrage-access-token");
   const accessTime = new Date(localStorage.getItem("umbrage-access-time"));
@@ -76,7 +76,13 @@ export default function PeopleDashboardPage() {
         {peopleList.map((person, index) => {
           return (
             <Grid item xs={12} sm={6} md={4} key={index}>
-              <PersonCard {...person} />
+              <PersonCard
+                {...person}
+                accessToken={accessToken}
+                setPeopleList={setPeopleList}
+                peopleList={peopleList}
+                setStatusBase={setStatusBase}
+              />
             </Grid>
           );
         })}

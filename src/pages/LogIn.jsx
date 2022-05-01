@@ -14,7 +14,7 @@ import AlertMessage from "../components/AlertMessage";
 
 export default function SignIn() {
   const localStorageUsername = localStorage.getItem("umbrage-username") || "";
-  const [saveUsername, setSaveUsername] = useState(false);
+  const [saveUsername, setSaveUsername] = useState(null);
   const [status, setStatusBase] = useState("");
   const navigate = useNavigate();
 
