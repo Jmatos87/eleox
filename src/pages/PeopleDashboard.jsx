@@ -12,8 +12,10 @@ import Divider from "@mui/material/Divider";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
+import Grid from "@mui/material/Grid";
 
 import AlertMessage from "../components/AlertMessage";
+import PersonCard from "../components/PersonCard";
 
 export default function PeopleDashboardPage() {
   const [peopleList, setPeopleList] = useState([]);
@@ -54,67 +56,31 @@ export default function PeopleDashboardPage() {
   }, []);
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main">
       {status ? <AlertMessage key={status.key} message={status.msg} /> : null}
       <CssBaseline />
       <Box
         sx={{
           marginTop: 5,
+          marginBottom: 5,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
         }}
       >
         <Typography component="h1" variant="h5">
-          People Dashboard!!!
+          VIP Contact List
         </Typography>
-        <List
-          sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
-        >
-          {peopleList.map((person, index) => {
-            const {
-              avatar,
-              first_name,
-              last_name,
-              email,
-              id,
-              job_title,
-            } = person;
-            return (
-              <div key={index}>
-                <ListItem
-                  alignItems="flex-start"
-                  button
-                  onClick={() => navigate(`../person/${id}`)}
-                >
-                  <ListItemAvatar>
-                    <Avatar alt={`${first_name} ${last_name}`} src={avatar} />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={`${first_name} ${last_name}`}
-                    secondary={
-                      <React.Fragment>
-                        <Typography
-                          sx={{ display: "block" }}
-                          component="span"
-                          variant="body2"
-                          color="text.primary"
-                        >
-                          {job_title}
-                        </Typography>
-                        {email}
-                      </React.Fragment>
-                    }
-                  />
-                </ListItem>
-                {index < peopleList.length - 1 ? (
-                  <Divider variant="inset" component="li" />
-                ) : null}
-              </div>
-            );
-          })}
-        </List>
       </Box>
+      <Grid container spacing={3}>
+        {peopleList.map((person, index) => {
+          return (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <PersonCard {...person} />
+            </Grid>
+          );
+        })}
+      </Grid>
     </Container>
   );
 }

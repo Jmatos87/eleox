@@ -7,9 +7,27 @@ import LogInPage from "./pages/LogIn";
 import PeopleDashboard from "./pages/PeopleDashboard";
 import PersonDetailView from "./pages/PersonDetailView";
 
+import COLORS from "./constants/colors.js";
+
 export default function App() {
   const queryClient = new QueryClient();
-  const theme = createTheme();
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: COLORS.primary,
+      },
+      secondary: {
+        main: COLORS.secondary,
+      },
+      background: {
+        default: COLORS.background,
+      },
+      text: {
+        primary: "#272932",
+        secondary: "#272932",
+      },
+    },
+  });
 
   return (
     <ThemeProvider theme={theme}>
@@ -19,7 +37,7 @@ export default function App() {
             <Route path="/log-in" element={<LogInPage />} />
             <Route path="/people-dashboard" element={<PeopleDashboard />} />
             <Route path="/person/:id" element={<PersonDetailView />} />
-            <Route path="/" element={<LogInPage />} />
+            <Route path="*" element={<LogInPage />} />
           </Routes>
         </Router>
       </QueryClientProvider>

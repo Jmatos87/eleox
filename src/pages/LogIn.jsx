@@ -64,6 +64,8 @@ export default function SignIn() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          padding: 2,
+          background: "white !important",
         }}
       >
         <Typography component="h1" variant="h5">
