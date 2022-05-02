@@ -126,7 +126,7 @@ export default function PersonCard(props) {
   const fullName = `${first_name} ${last_name}`;
 
   return (
-    <Card md={{ maxWidth: 345 }}>
+    <Card md={{ maxWidth: 345, padding: 1 }}>
       <Modal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
