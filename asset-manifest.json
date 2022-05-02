@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/eleox/static/css/main.e6c13ad2.css",
-    "main.js": "/eleox/static/js/main.4802e7fc.js",
+    "main.js": "/eleox/static/js/main.dc958935.js",
     "static/js/787.7e753e73.chunk.js": "/eleox/static/js/787.7e753e73.chunk.js",
     "index.html": "/eleox/index.html",
     "main.e6c13ad2.css.map": "/eleox/static/css/main.e6c13ad2.css.map",
-    "main.4802e7fc.js.map": "/eleox/static/js/main.4802e7fc.js.map",
+    "main.dc958935.js.map": "/eleox/static/js/main.dc958935.js.map",
     "787.7e753e73.chunk.js.map": "/eleox/static/js/787.7e753e73.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.4802e7fc.js"
+    "static/js/main.dc958935.js"
   ]
 }
