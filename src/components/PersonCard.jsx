@@ -13,14 +13,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import COLORS from "../constants/colors.js";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import { css } from "@emotion/css";
-import { styled } from "@mui/system";
 
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 
-const style = {
+const modalContainer = {
   position: "absolute",
   top: "50%",
   left: "50%",
@@ -30,6 +30,17 @@ const style = {
   border: "2px solid #000",
   boxShadow: 24,
   p: 4,
+};
+
+const buttonContainer = {
+  display: "flex",
+  marginTop: 4,
+  justifyContent: "space-between",
+};
+
+const loadingContainer = {
+  display: "flex",
+  justifyContent: "center",
 };
 
 export default function PersonCard(props) {
@@ -46,7 +57,7 @@ export default function PersonCard(props) {
     setStatusBase,
   } = props;
   const [expanded, setExpanded] = useState(null);
-  const [modalOpen, setModalOpen] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const [commentsLoading, setCommentsLoading] = useState(null);
 
   const [comments, setComments] = useState([]);
@@ -113,12 +124,26 @@ export default function PersonCard(props) {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={modalContainer}>
           <Typography id="modal-modal-title" variant="p" component="h2">
             Are you sure you want to delete {fullName}?
           </Typography>
-          <Button onClick={() => setModalOpen(false)}>Cancel</Button>
-          <Button onClick={handleDeleteContact}>Yes</Button>
+          <Box sx={buttonContainer}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => setModalOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleDeleteContact}
+            >
+              Yes
+            </Button>
+          </Box>
         </Box>
       </Modal>
       <CardHeader
@@ -165,6 +190,11 @@ export default function PersonCard(props) {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
+          {commentsLoading && (
+            <Box sx={loadingContainer}>
+              <CircularProgress />
+            </Box>
+          )}
           {!commentsLoading && comments.length === 0 && (
             <CardMedia
               component="img"

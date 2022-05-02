@@ -1,25 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import Divider from "@mui/material/Divider";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
 import Grid from "@mui/material/Grid";
 
 import AlertMessage from "../components/AlertMessage";
 import PersonCard from "../components/PersonCard";
+import NavBar from "../components/NavBar";
 
 export default function PeopleDashboardPage() {
+  const [authorized, setAuthorized] = useState(false);
   const [peopleList, setPeopleList] = useState([]);
-  const [status, setStatusBase] = React.useState(null);
+  const [status, setStatusBase] = React.useState("");
   const navigate = useNavigate();
   const accessToken = localStorage.getItem("umbrage-access-token");
   const accessTime = new Date(localStorage.getItem("umbrage-access-time"));
@@ -31,29 +25,33 @@ export default function PeopleDashboardPage() {
 
     if (!(accessToken && accessTime) || over24Hours) {
       navigate("../log-in");
+    } else {
+      setAuthorized(true);
     }
-  }, [accessToken, accessTime]);
+  }, [accessToken, accessTime, setAuthorized]);
 
   useEffect(() => {
-    fetch("http://umbrage-interview-api.herokuapp.com/people", {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw Error(response.statusText);
-        }
-        return response.json();
+    if (authorized) {
+      fetch("http://umbrage-interview-api.herokuapp.com/people", {
+        headers: { Authorization: `Bearer ${accessToken}` },
       })
-      .then(function (response) {
-        const { people } = response;
+        .then((response) => {
+          if (!response.ok) {
+            throw Error(response.statusText);
+          }
+          return response.json();
+        })
+        .then(function (response) {
+          const { people } = response;
 
-        setPeopleList(people);
-      })
-      .catch(function (error) {
-        // Need to communicate to user that an error has ocurred
-        setStatusBase({ msg: error.message, key: Math.random() });
-      });
-  }, []);
+          setPeopleList(people);
+        })
+        .catch(function (error) {
+          // Need to communicate to user that an error has ocurred
+          setStatusBase({ msg: error.message, key: Math.random() });
+        });
+    }
+  }, [authorized]);
 
   return (
     <Container component="main">
@@ -68,9 +66,7 @@ export default function PeopleDashboardPage() {
           alignItems: "center",
         }}
       >
-        <Typography component="h1" variant="h5">
-          VIP Contact List
-        </Typography>
+        <NavBar />
       </Box>
       <Grid container spacing={3}>
         {peopleList.map((person, index) => {
