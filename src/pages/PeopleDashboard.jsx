@@ -48,7 +48,11 @@ export default function PeopleDashboardPage() {
         })
         .catch(function (error) {
           // Need to communicate to user that an error has ocurred
+
           setStatusBase({ msg: error.message, key: Math.random() });
+          if (error.message === "Unauthorized") {
+            navigate("../log-in");
+          }
         });
     }
   }, [authorized]);
@@ -68,7 +72,13 @@ export default function PeopleDashboardPage() {
       >
         <NavBar />
       </Box>
-      <Grid container spacing={3}>
+      <Grid
+        container
+        spacing={3}
+        sx={{
+          marginBottom: 5,
+        }}
+      >
         {peopleList.map((person, index) => {
           return (
             <Grid item xs={12} sm={6} md={4} key={index}>

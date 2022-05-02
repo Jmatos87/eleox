@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
@@ -56,6 +57,8 @@ export default function PersonCard(props) {
     setPeopleList,
     setStatusBase,
   } = props;
+  const navigate = useNavigate();
+
   const [expanded, setExpanded] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [commentsLoading, setCommentsLoading] = useState(null);
@@ -88,6 +91,9 @@ export default function PersonCard(props) {
         .catch(function (error) {
           // Need to communicate to user that an error has ocurred
           setStatusBase({ msg: error.message, key: Math.random() });
+          if (error.message === "Unauthorized") {
+            navigate("../log-in");
+          }
         });
     }
   };
@@ -111,6 +117,9 @@ export default function PersonCard(props) {
       .catch(function (error) {
         // Need to communicate to user that an error has ocurred
         setStatusBase({ msg: error.message, key: Math.random() });
+        if (error.message === "Unauthorized") {
+          navigate("../log-in");
+        }
       });
   };
 

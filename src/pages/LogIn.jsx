@@ -7,6 +7,7 @@ import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Box from "@mui/material/Box";
+
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 
@@ -61,11 +62,13 @@ export default function SignIn() {
       <Box
         sx={{
           marginTop: 15,
+          padding: 3,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          padding: 2,
           background: "white !important",
+          borderRadius: 2,
+          boxShadow: 1,
         }}
       >
         <Typography component="h1" variant="h5">
