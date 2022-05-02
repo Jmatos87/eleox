@@ -4,15 +4,18 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Available Scripts
 
-In the project directory, you can run:
+After cloning this repo... In the project directory, you can run:
+
+### `npm install` or `yarn install`
+
+This will get your npm packages installed.
 
 ### `npm run start` or `yarn start`
 
-Runs the app in the development mode.\
+Then you run this for a local version of the app on your PC.
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+The page will reload when you make changes.
 
 ### DEVELOPER STEPS
 
