@@ -2,6 +2,10 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## How to log in
+username: int@eleox.com
+password: eleox
+
 ## Available Scripts
 
 After cloning this repo... In the project directory, you can run:

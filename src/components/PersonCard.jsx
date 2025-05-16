@@ -70,7 +70,7 @@ export default function PersonCard(props) {
     setExpanded(!expanded);
     if (!comments.length) {
       setCommentsLoading(true);
-      fetch(`http://umbrage-interview-api.herokuapp.com/people/${id}`, {
+      fetch(`https://eleox-interview-api-7n5su.ondigitalocean.app/people/${id}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
         .then((response) => {
@@ -101,7 +101,7 @@ export default function PersonCard(props) {
 
   const handleDeleteContact = () => {
     setModalOpen(false);
-    fetch(`http://umbrage-interview-api.herokuapp.com/people/${id}`, {
+    fetch(`https://eleox-interview-api-7n5su.ondigitalocean.app/people/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${accessToken}` },
     })

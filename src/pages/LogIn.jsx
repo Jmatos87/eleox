@@ -20,7 +20,7 @@ export default function SignIn() {
   const navigate = useNavigate();
 
   const logIn = (username, password) => {
-    fetch("http://umbrage-interview-api.herokuapp.com/login", {
+    fetch("https://eleox-interview-api-7n5su.ondigitalocean.app/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
