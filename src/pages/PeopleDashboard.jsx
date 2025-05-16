@@ -32,7 +32,7 @@ export default function PeopleDashboardPage() {
 
   useEffect(() => {
     if (authorized) {
-      fetch("http://umbrage-interview-api.herokuapp.com/people", {
+      fetch("https://eleox-interview-api-7n5su.ondigitalocean.app/people", {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
         .then((response) => {
